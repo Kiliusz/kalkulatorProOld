@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32514689-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-32514689-1');
+  </script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Kalkulator Gazu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="mojestyle.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+
+</head>
+
+<body>
+
+
+  <div id="header"></div>
+
+  <main>
+    <div class="container containerZaw ">
+      <div class="ramkaInput">
+        <div class="row">
+          <div class="col s5 m4">
+            <label class="form control">Przepływ w m3/h</label>
+            <input class="form-control" type="number" id="przeplyw" onclick="selectText(this)" onkeyup="przeplywHandler() " />
+          </div>
+          <div class="col s1 m1 offset-m1">
+            <p>lub</p>
+          </div>
+          <div class="col s6 m5">
+            <label class="form control">Moc urz. gaz. w kW</label>
+            <input class="form-control" type="number" id="mocUrzGaz" onclick="selectText(this)" onkeyup="mocUrzHandler()" />
+          </div>
+
+
+        </div>
+
+        <div class="row">
+          <div class="col s12 " id="przedWyniki"></div>
+          <div class="col s12 m6" id="wyniki"></div>
+        </div>
+      </div>
+      <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Info</a>
+      <!-- Modal Structure -->
+      <div id="modal1" class="modal">
+        <div class="modal-content">
+          <h4>Informacja</h4>
+          <p>Wprowadź przepływ w m3/h lub moc w kW aby program automatycznie dobrał średnicę rur i policzył spadek
+            jednostkowy.</p>
+
+          <p>W przypadku urządzeń o bardzo niskiej sprawności należy posługiwać się przepływem.</p>
+          <p>Przeliczenie z mocy na przepływ odbywa się z uwzględnieniem sprawności typowych kotłów gazowych.</p>
+          <p>Wzrost ciśnienia gazu ziemnego w odcinku pionowym przy wznoszeniu o 1,0 m wynosi 5,4Pa</p>
+          <p>Dobór rur na podstawie kryterium prędkości (6 m/s).</p>
+          <p>Pole przepływ w m3/h lub mocy w kW można wypełniać wedle uznania. Po wpisaniu jednej wartości, druga
+            wartość
+            zostanie automatycznie przeliczona.</p>
+
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+        </div>
+      </div>
+      <a class="waves-effect waves-light btn modal-trigger" href="#modal2">Typoszeregi rur</a>
+      <!-- Modal Structure -->
+      <div id="modal2" class="modal">
+        <div class="container">
+          <div class="row">
+            <div class="modal-content">
+              <h4>Typoszeregi</h4>
+
+              <ul>
+                Rury stalowe DN | Dz / g
+
+                <li> DN15 | 21,3 x 2 </li>
+                <li> DN20 | 26,9 x 2,3 </li>
+                <li> DN25 | 33,7 x 2,6 </li>
+                <li> DN32 | 42,4 x 2,6 </li>
+                <li> DN40 | 48,3 x 2,6 </li>
+                <li> DN50 | 60,3 x 2,9 </li>
+                <li> DN65 | 76,1 x 2,9 </li>
+                <li> DN80 | 88,9 x 3,2 </li>
+                <li> DN100 | 114,3 x 3,6 </li>
+                <li> DN125 | 139,7 x 4 </li>
+                <li> DN150 | 168,3 x 4,5 </li>
+                <li> DN200 | 219,1 x 6,3 </li>
+                <li> DN250 | 273 x 6,3 </li>
+                <li> DN300 | 323,9 x 7,1 </li>
+                <li> DN350 | 355,6 x 8 </li>
+                <li> DN400 | 406,4 x 8,8 </li>
+                <li> DN450 | 457,2 x 10 </li>
+                <li> DN500 | 508 x 11 </li>
+              </ul>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <div id="footer"></div>
+
+
+</body>
+
+</html>
+
+<script>
+  function selectText(obj) {
+    const input = document.getElementById(obj.id);
+    input.focus();
+    input.select();
+  }
+
+  $(document).ready(function () {
+    $('.modal').modal();
+  });
+  $(document).ready(function () {
+    $(".tooltipped").tooltip();
+  });
+
+  $(document).ready(function () {
+    $("select").formSelect();
+  });
+  $(document).ready(function () {
+    $(".sidenav").sidenav();
+  });
+
+  $(function () {
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
+  });
+
+
+  Math.log10 = Math.log10 || function (x) {
+    return Math.log(x) * Math.LOG10E;
+  };
+
+  rurySrednicaWew = [
+    17.3,
+    22.3,
+    28.5,
+    37.2,
+    43.1,
+    54.5,
+    70.3,
+    82.5,
+    107.1,
+    131.7,
+    159.3,
+    206.5,
+    260.4,
+    309.7,
+    339.6,
+    388.8,
+    437.2,
+    486
+  ];
+  rurySrednicaNominalna = [
+    "DN 15",
+    "DN 20",
+    "DN 25",
+    "DN 32",
+    "DN 40",
+    "DN 50",
+    "DN 65",
+    "DN 80",
+    "DN 100",
+    "DN 125",
+    "DN 150",
+    "DN 200",
+    "DN 250",
+    "DN 300",
+    "DN 350",
+    "DN 400",
+    "DN 450",
+    "DN 500"
+  ];
+
+  var zaokraglijLiczbe = function (liczba, miejsca) {
+    return (liczba = Number(Math.round(liczba + "e" + miejsca) + "e-" + miejsca));
+  };
+
+  var liczPrzeplywGazuMocy = function (moc) {
+    return przeplyw = moc * 0.115;
+  };
+  var liczMocGazuPrzeplyw = function (przeplyw) {
+    return moc = przeplyw / 0.115;
+  };
+
+  // zwraca spadek w Pa, arg (m3/h, mm)
+  var liczSpadekGazu = function (przeplyw, srednica) {
+    return spadekGazu = 0.776457e-8 * 0.78 * ((Math.pow(przeplyw, 1.82)) / (Math.pow((srednica / 1000), 4.82)))
+  };
+
+  //zwraca predksoc w m/s (m3/h, mm)
+  var liczPredkosc = function (przeplyw, srednica) {
+    var pole = 0.785 * (srednica / 1000) * (srednica / 1000)
+    return predkosc = (przeplyw / 3600) / (pole)
+  }
+
+  var liczPredkoscTablica = function (tablicaSrednic, przeplyw) {
+    tablicaPredkosci = [];
+    for (let i = 0; i < tablicaSrednic.length; i++) {
+      predkosc = liczPredkosc(przeplyw, tablicaSrednic[i]);
+      tablicaPredkosci.push(zaokraglijLiczbe(predkosc, 2));
+    }
+    return tablicaPredkosci;
+  }
+
+
+  var doborSrednicy = function (tablicaSrednic, przeplyw) {
+    tablicaSpadkow = [];
+    for (let i = 0; i < tablicaSrednic.length; i++) {
+      spadekGazu = liczSpadekGazu(przeplyw, tablicaSrednic[i])
+
+      tablicaSpadkow.push(zaokraglijLiczbe(spadekGazu, 3));
+    }
+    return tablicaSpadkow
+  }
+
+
+
+  var przeplywHandler = function () {
+    document.getElementById("wyniki").innerHTML = "";
+    console.clear();
+    przeplyw = document.getElementById('przeplyw').value;
+    moc = liczMocGazuPrzeplyw(przeplyw);
+    document.getElementById('mocUrzGaz').value = zaokraglijLiczbe(moc, 1);
+    obliczeonePredkosci = liczPredkoscTablica(rurySrednicaWew, przeplyw)
+    obliczoneSpadki = doborSrednicy(rurySrednicaWew, przeplyw)
+
+
+
+
+    wypiszDaneOdPredkosci(obliczeonePredkosci);
+
+
+  }
+
+  var mocUrzHandler = function () {
+    document.getElementById("wyniki").innerHTML = "";
+    console.clear();
+    moc = document.getElementById('mocUrzGaz').value;
+    przeplyw = liczPrzeplywGazuMocy(moc);
+    document.getElementById('przeplyw').value = zaokraglijLiczbe(przeplyw, 1);
+    obliczeonePredkosci = liczPredkoscTablica(rurySrednicaWew, przeplyw)
+    obliczoneSpadki = doborSrednicy(rurySrednicaWew, przeplyw)
+    wypiszDaneOdPredkosci(obliczeonePredkosci);
+
+
+  }
+  var wypiszDaneOdPredkosci = function (tablicaPredkosci) {
+    for (var i = 0; i < tablicaPredkosci.length; i++) {
+      if (tablicaPredkosci[i] < 6) {
+        for (let j = 2; j > -3; j--) {
+          if (i - j >= 0 && i - j < tablicaSpadkow.length) {
+            var wynikDOM = document.createElement("p");
+            if (j > 0) { wynikDOM.className = "red-text text-darken-2" };
+            var predkosciString = zaokraglijLiczbe(tablicaPredkosci[i - j], 2).toString();
+            var wynikWartosc = document.createTextNode(
+              rurySrednicaNominalna[i - j].toString() +
+              " - " +
+              obliczoneSpadki[i - j] +
+              " Pa/m" +
+              " | " +
+              " w= " +
+              zaokraglijLiczbe(tablicaPredkosci[i - j], 2) +
+              " m/s"
+            );
+
+            wynikDOM.appendChild(wynikWartosc);
+            document.getElementById("wyniki").appendChild(wynikDOM);
+            document.getElementById("wyniki").classList.add("wynikiRamka")
+          }
+        }
+        break;
+      }
+    }
+  }
+
+</script>

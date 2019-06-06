@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32514689-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-32514689-1');
+  </script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Obliczenia hydrauliczne CO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="mojestyle.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+</head>
+
+<body>
+
+
+
+
+
+  <div id="header"></div>
+
+  <main>
+
+    <div class="container containerZaw">
+      <div class="row ">
+
+        <div class="row ramkaInput">
+          <div id="select" class="input-field col s8 tooltipped" data-position="bottom" data-tooltip="Średnice zgodne z typowymi typoszeregami producentów">
+            <select id="chropowatoscBezwzgledna" onchange="chropHandler()">
+              <option selected value="0.15">Rury stalowe k=0,15 mm</option>
+              <option value="0.10">Rury stalowe k=0,10 mm</option>
+              <option value="0.007001">Rury PP PN20 k=0,007 mm</option>
+              <option value="0.007002">Rury Pex k=0,007 mm</option>
+              <option value="0.25">Rury żeliwne nowe k=0,25 mm</option>
+            </select>
+            <label>Rodzaj rury - chrop. bezwgl.</label>
+          </div>
+
+          <div class="col s4 input-field">
+            <label class="form control">temp. 0-100 [°C]</label>
+            <input class="form-control" type="number" id="temperatura" onclick="selectText(this)" onkeyup="temperaturaHandler()"
+              value="80" />
+          </div>
+        </div>
+        <div class="row ramkaInput">
+          <h6 class="center-align">Dobór średnicy na podstawie mocy </h6>
+
+
+          <div class="col s3 m4 ">
+            <label class="form control">Moc w kW</label>
+            <input class="form-control" type="number" id="moc" onclick="selectText(this)" onkeyup="mocHandler()" />
+          </div>
+          <div class="col s5 m4 ">
+            <label class="form control">Różnica temp.°C</label>
+            <input class="form-control" type="number" id="dt" value="20" onclick="selectText(this)" onkeyup="mocHandler()" />
+          </div>
+          <div id="select" class="input-field col s4 m4">
+            <select id="czynnik" onchange="czynnikHandler()">
+              <option selected value="4.2">Woda</option>
+              <option value="3.63">Glik. etyl. 35% (-20°C)</option>
+              <option value="3.54">Glik. etyl. 40% (-25°C)</option>
+              <option value="3.77">Glik. prop. 37% (-20°C)</option>
+              <option value="3.7">Glik. prop. 42% (-25°C)</option>
+            </select>
+            <label>Czynnik</label>
+          </div>
+        </div>
+
+        <div class="row ramkaInput" id="lub">
+          <h6 class="center-align">Dobór średnicy na podstawie przepływu </h6>
+
+
+          <div class="col s5 m4 ">
+            <label class="form control">Przepływ w m3/h</label>
+            <input class="form-control" type="number" id="przeplyw" onclick="selectText(this)" onkeyup="odpalanieMetrow() " />
+          </div>
+          <div class="col s2 m2 offset-m1">
+            <p>lub </p>
+          </div>
+          <div class="col s5 m4input-field">
+            <label class="form control">Przepływ w dm3/s</label>
+            <input class="form-control" type="number" id="przeplywLitry" onclick="selectText(this)" onkeyup="odpalanieLitrow()" />
+          </div>
+          <div class="col s12 " id="przedWyniki"></div>
+          <div class="col s12 " id="wyniki"></div>
+        </div>
+
+      </div>
+      <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Info</a>
+      <!-- Modal Structure -->
+      <div id="modal1" class="modal">
+        <div class="modal-content">
+          <h4>Informacja</h4>
+          <p>Wprowadź przepływ w m3/h lub w dm3/s aby program automatycznie dobrał średnicę i policzył spadek
+            jednostkowy.</p>
+          <p>Możesz także wprowadzić moc i różnicę temperatur - program obliczy automatycznie przepływ i dobierze
+            średnicę</p>
+          <p>Pamiętaj, że możesz zmienić temperaturę czynnika oraz jego rodzaj (woda, glikol propylenowy, etylenowy)</p>
+          <p>Dobór rur na podstawie kryterium jednostkowego spadku ciśnienia.</p>
+          <p>Opór jednostkowy w Pa/m obliczany jest na podstawie wzoru Darcy-Weisbecha. Chropowatość bezwzględna do
+            wyboru wg użytkownika.</p>
+          <p>Po podaniu mocy i różnicy temperatur pole przepływ wypełnia się samo.</p>
+          <p>Pole przepływ w m3/h lub dm3/s można wypełniać wedle uznania. Po wpisaniu jednej wartości, druga wartość
+            zostanie automatycznie przeliczona.</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+        </div>
+      </div>
+
+      <a class="waves-effect waves-light btn modal-trigger" href="#modal2">Typoszeregi rur</a>
+      <!-- Modal Structure -->
+      <div id="modal2" class="modal">
+        <div class="container">
+          <div class="row">
+            <div class="modal-content">
+              <h4>Typoszeregi</h4>
+
+              <ul>
+                Rury stalowe DN | Dz / g
+
+                <li> DN15 | 21,3 x 2 </li>
+                <li> DN20 | 26,9 x 2,3 </li>
+                <li> DN25 | 33,7 x 2,6 </li>
+                <li> DN32 | 42,4 x 2,6 </li>
+                <li> DN40 | 48,3 x 2,6 </li>
+                <li> DN50 | 60,3 x 2,9 </li>
+                <li> DN65 | 76,1 x 2,9 </li>
+                <li> DN80 | 88,9 x 3,2 </li>
+                <li> DN100 | 114,3 x 3,6 </li>
+                <li> DN125 | 139,7 x 4 </li>
+                <li> DN150 | 168,3 x 4,5 </li>
+                <li> DN200 | 219,1 x 6,3 </li>
+                <li> DN250 | 273 x 6,3 </li>
+                <li> DN300 | 323,9 x 7,1 </li>
+                <li> DN350 | 355,6 x 8 </li>
+                <li> DN400 | 406,4 x 8,8 </li>
+                <li> DN450 | 457,2 x 10 </li>
+                <li> DN500 | 508 x 11 </li>
+              </ul>
+
+              <ul>
+                Rury PP Dz / g
+                <li>16 x 2,7</li>
+                <li>20 x 3,4</li>
+                <li>25 x 4,2</li>
+                <li>32 x 5,4</li>
+                <li>40 x 6,7</li>
+                <li>50 x 8,3</li>
+                <li>63 x 10,5</li>
+                <li>75 x 12,5</li>
+                <li>90 x 15</li>
+                <li>110 x 18,3</li>
+              </ul>
+              <ul>
+                Rury Wielowarstwowe Dz / g
+                <li>16 x 2,0</li>
+                <li>20 x 2,0</li>
+                <li>25 x 2,5</li>
+                <li>32 x 3,0</li>
+                <li>40 x 3,5</li>
+                <li>50 x 4,0</li>
+                <li>63 x 4,5</li>
+
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+    </div>
+
+  </main>
+
+  <div id="footer"></div>
+</body>
+
+</html>
+
+
+<script>
+  $(document).ready(function () {
+    $(".tooltipped").tooltip();
+  });
+
+  $(document).ready(function () {
+    $("select").formSelect();
+  });
+  $(document).ready(function () {
+    $(".sidenav").sidenav();
+  });
+
+  $(function () {
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
+  });
+  $(document).ready(function () {
+    $('.modal').modal();
+  });
+
+  function selectText(obj) {
+    const input = document.getElementById(obj.id);
+    input.focus();
+    input.select();
+  }
+
+  Math.log10 =
+    Math.log10 ||
+    function (x) {
+      return Math.log(x) * Math.LOG10E;
+    };
+
+
+
+  var liczPrzeplywMocy = function () {
+    var moc = document.getElementById("moc").value;
+    if (moc < 0) {
+      moc = 1;
+      document.getElementById("moc").value = moc;
+    }
+    var dt = document.getElementById("dt").value;
+    if (dt < 0) {
+      dt = 1;
+      document.getElementById("dt").value = dt;
+    }
+    var cieploWlasciwe = document.getElementById("czynnik").value;
+    var temp = document.getElementById("temperatura").value;
+    var gestoscPlynu;
+    if (cieploWlasciwe == 4.2) {
+      gestoscPlynu = liczGestoscWody(temp);
+    } else if (cieploWlasciwe == 3.63) {
+      gestoscPlynu = 1052;
+    } else if (cieploWlasciwe == 3.54) {
+      gestoscPlynu = 1059;
+    } else if (cieploWlasciwe == 3.77) {
+      gestoscPlynu = 1034;
+    } else if (cieploWlasciwe == 3.7) {
+      gestoscPlynu = 1036;
+    }
+    //kg/s
+    return (przeplywMocy =
+      (moc / (dt * cieploWlasciwe) / (gestoscPlynu / 1000)) * 3.6);
+  };
+
+  var czynnikHandler = function () {
+    if (document.getElementById("moc").value.length == 0) {
+      obliczSpadek();
+    } else {
+      document.getElementById("przedWyniki").innerHTML = "";
+      document.getElementById("przeplyw").value = zaokraglijLiczbe(
+        liczPrzeplywMocy(),
+        3
+      );
+      document.getElementById("przeplywLitry").value = zaokraglijLiczbe(
+        document.getElementById("przeplyw").value * (10 / 36),
+        3
+      );
+      obliczSpadek();
+      var wynikDOM = document.createElement("p");
+      var tekst =
+        "Dla " +
+        document.getElementById("moc").value +
+        " kW " +
+        "  oraz różnicy temp.  " +
+        document.getElementById("dt").value +
+        "°C" +
+        " V= " +
+        document.getElementById("przeplyw").value +
+        " m3/h";
+
+      var wynikWartosc = document.createTextNode(tekst);
+      wynikDOM.appendChild(wynikWartosc);
+      document.getElementById("przedWyniki").appendChild(wynikDOM);
+    }
+  };
+
+  var mocHandler = function () {
+    document.getElementById("przedWyniki").innerHTML = "";
+    document.getElementById("wyniki").innerHTML = ""
+
+    document.getElementById("przeplyw").value = zaokraglijLiczbe(
+      liczPrzeplywMocy(), 3
+    );
+    if (document.getElementById("dt").value == 0) {
+      var wynikDOM = document.createElement("p");
+      var tekst = "Nie podano różnicy temperatur"
+      var wynikWartosc = document.createTextNode(tekst);
+      wynikDOM.appendChild(wynikWartosc);
+      document.getElementById("przedWyniki").appendChild(wynikDOM);
+    } else {
+      var wynikDOM = document.createElement("p");
+      var tekst =
+        "Dla " +
+        document.getElementById("moc").value +
+        " kW " +
+        "  oraz różnicy temp.  " +
+        document.getElementById("dt").value +
+        "°C" +
+        ", przepływ wynosi v= " +
+        document.getElementById("przeplyw").value +
+        " m3/h";
+
+      var wynikWartosc = document.createTextNode(tekst);
+      wynikDOM.appendChild(wynikWartosc);
+      document.getElementById("przedWyniki").appendChild(wynikDOM);
+
+      document.getElementById("przeplywLitry").value = zaokraglijLiczbe(
+        document.getElementById("przeplyw").value * (10 / 36),
+        3
+      );
+      obliczSpadek();
+    }
+
+
+  };
+
+  var temperaturaHandler = function () {
+    obliczSpadek();
+  };
+
+  var chropHandler = function () {
+    obliczSpadek();
+  };
+
+  var odpalanieLitrow = function () {
+    document.getElementById("przedWyniki").innerHTML =
+      "Dla podanego przepływu V= " +
+      document.getElementById("przeplywLitry").value +
+      " dm3/s:";
+    document.getElementById("moc").value = null;
+    document.getElementById("dt").value = null;
+    document.getElementById("przeplyw").value =
+      document.getElementById("przeplywLitry").value * 3.6;
+    obliczSpadek();
+  };
+
+  var odpalanieMetrow = function () {
+    document.getElementById("przedWyniki").innerHTML =
+      "Dla podanego przepływu V= " +
+      document.getElementById("przeplyw").value +
+      " m3/h:";
+    document.getElementById("moc").value = null;
+    document.getElementById("dt").value = null;
+    document.getElementById("przeplywLitry").value = zaokraglijLiczbe(
+      document.getElementById("przeplyw").value * (10 / 36),
+      3
+    );
+    obliczSpadek();
+  };
+
+  rurySrednicaWew = [
+    17.3,
+    22.3,
+    28.5,
+    37.2,
+    43.1,
+    54.5,
+    70.3,
+    82.5,
+    107.1,
+    131.7,
+    159.3,
+    206.5,
+    260.4,
+    309.7,
+    339.6,
+    388.8,
+    437.2,
+    486
+  ];
+
+  ruryGruboscScianki = [2, 2.3, 2.6, 2.6, 2.6, 2.9, 3.2, 3.6, 4, 4.5, 6.3, 6.3, 7.1, 8, 8.8, 10, 11];
+
+  rurySrednicaNominalna = [
+    "DN 15",
+    "DN 20",
+    "DN 25",
+    "DN 32",
+    "DN 40",
+    "DN 50",
+    "DN 65",
+    "DN 80",
+    "DN 100",
+    "DN 125",
+    "DN 150",
+    "DN 200",
+    "DN 250",
+    "DN 300",
+    "DN 350",
+    "DN 400",
+    "DN 450",
+    "DN 500"
+  ];
+
+  ruryPPWew = [10.6, 13.2, 16.6, 21.2, 26.6, 33.4, 42, 50, 60, 73.4];
+  ruryPPNomin = [
+    "16x2,7",
+    "20x3,4",
+    "25x4,2",
+    "32x5,4",
+    "40x6,7",
+    "50x8,3",
+    "63x10,5",
+    "75x12,5",
+    "90x15",
+    "110x18,3"
+  ];
+
+  ruryPexWew = [12.0, 16.0, 20, 26, 33, 42, 54];
+  ruryPexNomin = [
+    "16x2,0",
+    "20x2,0",
+    "25x2,5",
+    "32x3,0",
+    "40x3,5",
+    "50x4,0",
+    "63x4,5"
+  ];
+
+  predkoscTab = [];
+  spadekTab = [];
+  tablicaSrednic = [];
+
+  var obliczSpadek = function () {
+
+    document.getElementById("wyniki").innerHTML = "";
+    predkoscTab = [];
+    spadekTab = [];
+    rury = document.getElementById("chropowatoscBezwzgledna").value;
+    tablicaSrednic = [];
+    tablicaNominalnych = [];
+    if (rury == 0.1 || rury == 0.15 || rury == 0.25) {
+      tablicaSrednic = rurySrednicaWew;
+      tablicaNominalnych = rurySrednicaNominalna;
+    } else if (rury == 0.007001) {
+      tablicaSrednic = ruryPPWew;
+      tablicaNominalnych = ruryPPNomin;
+    } else if (rury == 0.007002) {
+      tablicaSrednic = ruryPexWew;
+      tablicaNominalnych = ruryPexNomin;
+    }
+
+    for (let i = 0; i < tablicaSrednic.length; i++) {
+      var przeplyw = document.getElementById("przeplyw").value;
+      if (przeplyw == 0) {
+        break;
+      }
+      var chropowatoscBezwzgledna = document.getElementById(
+        "chropowatoscBezwzgledna"
+      ).value;
+      var srednica = tablicaSrednic[i];
+      var temperatura = document.getElementById("temperatura").value;
+      if (temperatura > 100) {
+        temperatura = 100;
+        document.getElementById("temperatura").value = 100;
+      } else if (temperatura < 0) {
+        temperatura = 0;
+        document.getElementById("temperatura").value = 0;
+      }
+      var czynnikWartosc = document.getElementById("czynnik").value;
+      var predkosc = liczPredkosc(przeplyw, srednica);
+      var gestoscWody = liczGestoscWody(temperatura);
+      if (czynnikWartosc == 4.2) {
+        var lepkosc = liczlepkoscKinematycznaWody(temperatura);
+      } else {
+        var lepkosc = liczLepkoscKinematycznaGlikoluEtyl(
+          temperatura,
+          czynnikWartosc
+        );
+      }
+
+      var reynolds = liczReynolds(predkosc, srednica, lepkosc);
+      var lambda = liczWspOporowLambda(
+        chropowatoscBezwzgledna,
+        reynolds,
+        srednica
+      );
+      var spadekLiniowy = liczSpadekLiniowy(
+        lambda,
+        srednica,
+        predkosc,
+        temperatura
+      );
+
+      // console.log(lambda +"  " + srednica +"  " + zaokraglijLiczbe(spadekLiniowy));
+      // console.log("srednica "+ rurySrednicaNominalna[i] +" predkosc "+zaokraglijLiczbe(predkosc,2) );
+
+      predkoscTab.push(zaokraglijLiczbe(predkosc, 2));
+      spadekTab.push(zaokraglijLiczbe(spadekLiniowy, 2));
+    }
+
+    for (var i = 0; i < spadekTab.length; i++) {
+      if (spadekTab[i] < 180) {
+        for (let j = 2; j > -3; j--) {
+          if (i - j >= 0 && i - j < spadekTab.length) {
+            var wynikDOM = document.createElement("p");
+            if (j > 0) {
+              wynikDOM.className = "red-text text-darken-2";
+            }
+            var spadekString = zaokraglijLiczbe(spadekTab[i - j], 2).toString();
+            var wynikWartosc = document.createTextNode(
+              tablicaNominalnych[i - j].toString() +
+              " - " +
+              spadekString +
+              " Pa/m" +
+              " | " +
+              " w= " +
+              zaokraglijLiczbe(predkoscTab[i - j], 2) +
+              " m/s"
+            );
+
+            wynikDOM.appendChild(wynikWartosc);
+            document.getElementById("wyniki").appendChild(wynikDOM);
+            document.getElementById("wyniki").classList.add("wynikiRamka")
+          }
+        }
+        break;
+      }
+    }
+    if (document.getElementById("wyniki").innerHTML == 0) {
+      document.getElementById("wyniki").innerHTML = "<br>W wybranym typoszeregu nie ma tak dużych rur"
+    };
+  };
+
+
+
+  var zaokraglijLiczbe = function (liczba, miejsca) {
+    return (liczba = Number(
+      Math.round(liczba + "e" + miejsca) + "e-" + miejsca
+    ));
+  };
+
+  // Zwraca predkosc w [m/s] jednostki args (m3/h, mm)
+  var liczPredkosc = function (przeplyw, srednica) {
+    poleRury = (Math.PI * (srednica / 1000) * (srednica / 1000)) / 4;
+    return (predkosc = przeplyw / 3600 / poleRury);
+  };
+
+  // Zwraca temperature w st C args (st C)
+  var liczGestoscWody = function (temperatura) {
+    gestoscWody =
+      (999.83952 +
+        16.945176 * temperatura -
+        7.9870401e-3 * temperatura * temperatura -
+        46.170461e-6 * temperatura * temperatura * temperatura +
+        105.56302e-9 * temperatura * temperatura * temperatura * temperatura -
+        280.54253e-12 *
+        temperatura *
+        temperatura *
+        temperatura *
+        temperatura *
+        temperatura) /
+      (1 + 16.89785e-3 * temperatura);
+    return gestoscWody;
+  };
+
+  // zwraca lepkoscKinematycznaWody [m2/s] args ( °C)
+  var liczlepkoscKinematycznaWody = function (temperatura) {
+    dynamicznyWspLepkosciWody =
+      0.00179 /
+      (1 + 0.0337 * temperatura + 0.000221 * temperatura * temperatura);
+    return (lepkoscKinematycznaWody =
+      dynamicznyWspLepkosciWody / liczGestoscWody(temperatura));
+  };
+  liczLepkoscKinematycznaGlikoluEtyl = function (temperatura, cp) {
+    if (cp == 3.63) {
+      if (temperatura >= 0 && temperatura < 20) {
+        lepkoscKinematycznaGlikolu = 4.6 - ((4.6 - 2.2) / 20) * temperatura;
+      }
+      if (temperatura >= 20 && temperatura < 40) {
+        lepkoscKinematycznaGlikolu =
+          2.2 - ((2.2 - 1.5) / 20) * (temperatura - 20);
+      }
+      if (temperatura >= 40 && temperatura < 60) {
+        lepkoscKinematycznaGlikolu =
+          1.5 - ((1.5 - 0.98) / 20) * (temperatura - 40);
+      }
+      if (temperatura >= 60 && temperatura < 80) {
+        lepkoscKinematycznaGlikolu =
+          0.98 - ((0.98 - 0.68) / 20) * (temperatura - 60);
+      }
+      if (temperatura >= 80 && temperatura < 101) {
+        lepkoscKinematycznaGlikolu =
+          0.68 - ((0.68 - 0.51) / 20) * (temperatura - 80);
+      }
+    }
+    if (cp == 3.54) {
+      if (temperatura >= 0 && temperatura < 20) {
+        lepkoscKinematycznaGlikolu = 6.5 - ((6.5 - 2.94) / 20) * temperatura;
+      }
+      if (temperatura >= 20 && temperatura < 50) {
+        lepkoscKinematycznaGlikolu =
+          2.94 - ((2.94 - 1.43) / 30) * (temperatura - 20);
+      }
+      if (temperatura >= 50 && temperatura < 101) {
+        lepkoscKinematycznaGlikolu =
+          1.43 - ((1.43 - 0.65) / 50) * (temperatura - 50);
+      }
+    }
+    if (cp == 3.77) {
+      if (temperatura >= 0 && temperatura < 20) {
+        lepkoscKinematycznaGlikolu = 12 - ((12 - 4.4) / 20) * temperatura;
+      }
+      if (temperatura >= 20 && temperatura < 40) {
+        lepkoscKinematycznaGlikolu =
+          4.4 - ((4.4 - 2.2) / 20) * (temperatura - 20);
+      }
+      if (temperatura >= 40 && temperatura < 60) {
+        lepkoscKinematycznaGlikolu =
+          2.2 - ((2.2 - 1.3) / 20) * (temperatura - 40);
+      }
+      if (temperatura >= 60 && temperatura < 80) {
+        lepkoscKinematycznaGlikolu =
+          1.3 - ((1.3 - 0.9) / 20) * (temperatura - 60);
+      }
+      if (temperatura >= 80 && temperatura < 101) {
+        lepkoscKinematycznaGlikolu =
+          0.9 - ((0.9 - 0.7) / 20) * (temperatura - 80);
+      }
+    }
+    if (cp == 3.7) {
+      if (temperatura >= 0 && temperatura < 20) {
+        lepkoscKinematycznaGlikolu = 14.3 - ((14.3 - 5.0) / 20) * temperatura;
+      }
+      if (temperatura >= 20 && temperatura < 40) {
+        lepkoscKinematycznaGlikolu =
+          5.0 - ((5.0 - 2.46) / 20) * (temperatura - 20);
+      }
+      if (temperatura >= 40 && temperatura < 60) {
+        lepkoscKinematycznaGlikolu =
+          2.46 - ((2.46 - 1.4) / 20) * (temperatura - 40);
+      }
+      if (temperatura >= 60 && temperatura < 80) {
+        lepkoscKinematycznaGlikolu =
+          1.4 - ((1.4 - 0.96) / 20) * (temperatura - 60);
+      }
+      if (temperatura >= 80 && temperatura < 101) {
+        lepkoscKinematycznaGlikolu =
+          0.96 - ((0.96 - 0.73) / 20) * (temperatura - 80);
+      }
+    }
+    lepkoscKinematycznaGlikolu = lepkoscKinematycznaGlikolu / 1000000;
+    return lepkoscKinematycznaGlikolu;
+  };
+
+  // liczbe Reynoldsa w [-] jednostki args (m/s, mm, m2/s)
+  var liczReynolds = function (
+    predkoscPrzeplywu,
+    srednica,
+    lepkoscKinematyczna
+  ) {
+    return (reynolds =
+      (predkoscPrzeplywu * (srednica / 1000)) / lepkoscKinematyczna);
+  };
+
+  // zwraca lambde w [-] jednostki args (mm, -, mm)
+  var liczWspOporowLambda = function (
+    chropowatoscBezwzgledna,
+    reynolds,
+    srednica
+  ) {
+    chropBzw = chropowatoscBezwzgledna;
+    reynolds = reynolds;
+    srednica = srednica;
+    lambda = 0.00001;
+
+    var liczLewaStrLambda = function (lambda) {
+      lambdaL = 1 / Math.sqrt(lambda);
+      return lambdaL;
+    };
+
+    var liczPrawaStrLambda = function (chropBzw, reynolds, lambda, srednica) {
+      lambdaR =
+        -2 *
+        Math.log10(
+          chropBzw / 1000 / (3.71 * (srednica / 1000)) +
+          2.51 / (reynolds * Math.sqrt(lambda))
+        );
+      return lambdaR;
+    };
+
+    liczLewaStrLambda(lambda);
+    liczPrawaStrLambda(chropBzw, reynolds, lambda, srednica);
+    licznik = 1;
+    while (Math.abs(lambdaL - lambdaR) > 0.005) {
+      liczLewaStrLambda(lambda);
+      liczPrawaStrLambda(chropBzw, reynolds, lambda, srednica);
+      lambda = lambda + 0.00001;
+      if (licznik == 55555555) {
+        break;
+      }
+      licznik++;
+    }
+    return lambda;
+  };
+
+  // args (lambda bez jednostki, srednica mm, m/s, temp w C)
+  var liczSpadekLiniowy = function (
+    lambda,
+    srednica,
+    predkoscPrzeplywu,
+    temperatura
+  ) {
+    spadekLiniowy =
+      liczGestoscWody(temperatura) *
+      (lambda / (srednica / 1000)) *
+      ((predkoscPrzeplywu * predkoscPrzeplywu) / 2);
+    return spadekLiniowy;
+  };
+
+
+</script>

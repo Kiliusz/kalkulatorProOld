@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32514689-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-32514689-1');
+    </script>
+    <meta charset="utf-8" />
+    <meta name="description" content="Kalkulator hydrauliczny, kalkulator oporów liniowych" />
+    <meta name="Keywords" content="hydraulika, kalkulator projektanta, opory liniowe, spadek ciśnienia, dobór rur" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Dobór średnic - wodociągi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+
+</head>
+
+<body>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="mojestyle.css" />
+
+
+    <div id="header"></div>
+
+    <main>
+
+        <div class="container containerZaw">
+            <div class="row ">
+                <div class="col s12 m6 l6 xl6 padLeftZero">
+                    <div class="ramkaInput wodaWys">
+                        <div class="col s3 m3">
+                            <label class="form control">Umywalka</label>
+                            <input class="form-control" type="number" value="0" id="umywalka" onclick="selectText(this)"
+                                onkeyup="liczQ()" />
+                        </div>
+                        <div class="col s3 m3">
+                            <label class="form control">Zlewozm.</label>
+                            <input class="form-control" type="number" value="0" id="zlew" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                        <div class="col s3 m3 ">
+                            <label class="form control">Płuczka</label>
+                            <input class="form-control" type="number" value="0" id="pluczka" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                        <div class="col s3 m3 ">
+                            <label class="form control">Wanna</label>
+                            <input class="form-control" type="number" value="0" id="wanna" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                        <div class="col s3 m3 ">
+                            <label class="form control">Natrysk</label>
+                            <input class="form-control" type="number" value="0" id="natrysk" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                        <div class="col s3 m3 ">
+                            <label class="form control">Pralka</label>
+                            <input class="form-control" type="number" value="0" id="pralka" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                        <div class="col s3 m3 ">
+                            <label class="form control">Zmywarka</label>
+                            <input class="form-control" type="number" value="0" id="zmywarka" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                        <div class="col s3 m3 ">
+                            <label class="form control">Pisuar</label>
+                            <input class="form-control" type="number" value="0" id="pisuar" onclick="selectText(this)"
+                                onkeyup="
+                            liczQ()" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m6 l6 xl5 wynikiWoda">
+                    <div class="card blue darken-1 aa ">
+                        <div class="card-content white-text">
+                            <span class="card-title">
+                                &Sigma;qn =
+                                <span style="display: inline-block" class="card-title" id="sumaQn">
+                                    0,00
+                                </span>
+                                l/s
+                            </span>
+
+                            <span class="card-title">
+                                Q<sub>obl</sub> =
+                                <span style="display: inline-block" class="card-title" id="qObl">
+                                    0,00
+                                </span>
+                                l/s,
+                                <span style="display: inline-block" class="card-title" id="m3hh">
+                                    0,00
+                                </span>
+                                m3/h
+                            </span>
+
+                            <span class="card-title">
+
+                                <span style="display: inline-block" class="card-title" id="dobranaSrednica">
+                                    średnica
+                                </span>
+                                |
+                                <span style="display: inline-block" class="card-title" id="predkoscObliczona">
+                                    prędkość
+                                </span>
+
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 m5 roB">
+                    <select id="rodzajBud" onchange="liczQ()">
+                        <option selected value="1">Budynki mieszkalne</option>
+                        <option value="2">Budynki biurowe i administracyjne</option>
+                        <option value="3">Hotele</option>
+                        <option value="4">Domy towarowe</option>
+                        <option value="5">Szpitale</option>
+                        <option value="6">Szkoły</option>
+                    </select>
+                    <label>Rodzaj budynku</label>
+                </div>
+                <div class="input-field col s5 m3 l4 xl3 roB">
+                    <select id="rodzajRur" class="input-field" onchange="liczQ()">
+                        <option value="1">Rury stalowe</option>
+                        <option selected value="2">Rury PP</option>
+                        <option value="3">Rury Pex</option>
+                    </select>
+                    <label>Rodzaj rur</label>
+                </div>
+                <div class="input-field col s6 m4 l3 xl3 roB tooltipped" data-position="bottom" data-tooltip="Najczęstsze kryterium prędkości 1,0 - 1,5 m/s">
+                    <input type="number" placeholder="w [m/s]" id="kryterium" type="number" value="1.5" onclick="selectText(this)"
+                        onkeyup="liczQ()">
+                    <label for="kryterium">Kryterium prędkości [m/s]</label>
+                </div>
+                <div class="col s6  roB">
+                    <a class="waves-effect waves-light btn blue darken-1" href="#" onclick="zeruj()">Zeruj
+                        pola</a>
+                </div>
+
+            </div>
+            <div class="row wodociagiInfo">
+                <!-- MODALE  -->
+                <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Info</a>
+                <!-- Modal Structure -->
+                <div id="modal1" class="modal">
+                    <div class="modal-content">
+                        <h4>Określanie przepływów obliczeniowych instalacji wodociągowej</h4>
+                        <p>Wprowadź ilość przyborów sanitarnych, ewentualnie zmień rodzaj budynku, rodzaj rur lub zmień
+                            kryterium prędkości - program sam obliczy przepływy i dobierze średnicę rury </p>
+                        <p>Dobór średnic obliczany jest na podstawie kryterium prędkości</p>
+                        <p>Dla zaworu czerpalnego należy skorzystać z pola pisuar (te same wypływy normatywne)</p>
+                        <p>Dobór średnic na podstawie własnego przepływu można wykonać w zakładce ogrzewanie
+                            <a class="waves-effect waves-light btn" href="KalkulatorCO.html">Ogrzewanie</a>
+                        </p>
+
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+                    </div>
+                </div>
+
+                <a class="waves-effect waves-light btn modal-trigger" href="#modal4">Prędkości Przepływu</a>
+                <!-- Modal Structure -->
+                <div id="modal4" class="modal">
+                    <div class="modal-content">
+                        <h4>Prędkości przepływu</h4>
+                        <table class="striped">
+                            <thead>
+                                <tr>
+                                    <th>Rodzaj przewodu</th>
+                                    <th>PN-92/B-01706 [m/s]</th>
+                                    <th>DIN 1988 [m/s]</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Połączenia od pionu do punktów czerp.</td>
+                                    <td>1,5</td>
+                                    <td>2,0</td>
+                                </tr>
+                                <tr>
+                                    <td>Piony w instalacjach wodociągowych</td>
+                                    <td>1,5</td>
+                                    <td>2,0</td>
+                                </tr>
+                                <tr>
+                                    <td>Przewody rozdzielcze</td>
+                                    <td>1,0</td>
+                                    <td>1,5</td>
+                                </tr>
+                                <tr>
+                                    <td>Połączenia wodociągowe</td>
+                                    <td>1,0</td>
+                                    <td>1,5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+                    </div>
+                </div>
+
+                <a class="waves-effect waves-light btn modal-trigger" href="#modal3">Wypływy normatywne</a>
+                <!-- Modal Structure -->
+                <div id="modal3" class="modal">
+                    <div class="modal-content">
+                        <h4>Wypływy normatywne</h4>
+                        <p>Umywalka - 0,07 dm3/s</p>
+                        <p>Zlewozmywak - 0,07 dm3/s</p>
+                        <p>Płuczka zbiornikowa - 0,13 dm3/s</p>
+                        <p>Wanna - 0,15 dm3/s</p>
+                        <p>Natrysk - 0,15 dm3/s</p>
+                        <p>Pralka - 0,25 dm3/s</p>
+                        <p>Zmywarka - 0,15 dm3/s</p>
+                        <p>Pisuar / Zawór czerpalny - 0,3 dm3/s</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+                    </div>
+                </div>
+
+                <a class="waves-effect waves-light btn modal-trigger" href="#modal2">Typoszeregi rur</a>
+                <!-- Modal Structure -->
+                <div id="modal2" class="modal">
+                    <div class="container">
+                        <div class="row">
+                            <div class="modal-content">
+                                <h4>Typoszeregi</h4>
+                                <ul>
+                                    Rury stalowe DN | Dz / g
+
+                                    <li> DN15 | 21,3 x 2 </li>
+                                    <li> DN20 | 26,9 x 2,3 </li>
+                                    <li> DN25 | 33,7 x 2,6 </li>
+                                    <li> DN32 | 42,4 x 2,6 </li>
+                                    <li> DN40 | 48,3 x 2,6 </li>
+                                    <li> DN50 | 60,3 x 2,9 </li>
+                                    <li> DN65 | 76,1 x 2,9 </li>
+                                    <li> DN80 | 88,9 x 3,2 </li>
+                                    <li> DN100 | 114,3 x 3,6 </li>
+                                    <li> DN125 | 139,7 x 4 </li>
+                                    <li> DN150 | 168,3 x 4,5 </li>
+                                    <li> DN200 | 219,1 x 6,3 </li>
+                                    <li> DN250 | 273 x 6,3 </li>
+                                    <li> DN300 | 323,9 x 7,1 </li>
+                                    <li> DN350 | 355,6 x 8 </li>
+                                    <li> DN400 | 406,4 x 8,8 </li>
+                                    <li> DN450 | 457,2 x 10 </li>
+                                    <li> DN500 | 508 x 11 </li>
+                                </ul>
+
+                                <ul>
+                                    Rury PP Dz / g
+                                    <li>16 x 2,7</li>
+                                    <li>20 x 3,4</li>
+                                    <li>25 x 4,2</li>
+                                    <li>32 x 5,4</li>
+                                    <li>40 x 6,7</li>
+                                    <li>50 x 8,3</li>
+                                    <li>63 x 10,5</li>
+                                    <li>75 x 12,5</li>
+                                    <li>90 x 15</li>
+                                    <li>110 x 18,3</li>
+                                </ul>
+                                <ul>
+                                    Rury Wielowarstwowe Dz / g
+                                    <li>16 x 2,0</li>
+                                    <li>20 x 2,0</li>
+                                    <li>25 x 2,5</li>
+                                    <li>32 x 3,0</li>
+                                    <li>40 x 3,5</li>
+                                    <li>50 x 4,0</li>
+                                    <li>63 x 4,5</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Powrót</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="footer"></div>
+
+</body>
+
+</html>
+<script>
+    $(document).ready(function () {
+        $(".tooltipped").tooltip();
+    });
+
+    $(document).ready(function () {
+        $("select").formSelect();
+    });
+    $(document).ready(function () {
+        $(".sidenav").sidenav();
+    });
+
+    $(function () {
+        $("#header").load("header.html");
+        $("#footer").load("footer.html");
+    });
+    $(document).ready(function () {
+        $('.modal').modal();
+    });
+
+    function selectText(obj) {
+        const input = document.getElementById(obj.id);
+        input.focus();
+        input.select();
+    }
+    rurySrednicaWew = [
+        17.3,
+        22.3,
+        28.5,
+        37.2,
+        43.1,
+        54.5,
+        70.3,
+        82.5,
+        107.1,
+        131.7,
+        159.3,
+        206.5,
+        260.4,
+        309.7,
+        339.6,
+        388.8,
+        437.2,
+        486
+    ];
+
+    ruryGruboscScianki = [2, 2.3, 2.6, 2.6, 2.6, 2.9, 3.2, 3.6, 4, 4.5, 6.3, 6.3, 7.1, 8, 8.8, 10, 11];
+    rurySrednicaNominalna = [
+        "DN 15",
+        "DN 20",
+        "DN 25",
+        "DN 32",
+        "DN 40",
+        "DN 50",
+        "DN 65",
+        "DN 80",
+        "DN 100",
+        "DN 125",
+        "DN 150",
+        "DN 200",
+        "DN 250",
+        "DN 300",
+        "DN 350",
+        "DN 400",
+        "DN 450",
+        "DN 500"
+    ];
+
+    ruryPPWew = [10.6, 13.2, 16.6, 21.2, 26.6, 33.4, 42, 50, 60, 73.4];
+    ruryPPNomin = [
+        "16x2,7",
+        "20x3,4",
+        "25x4,2",
+        "32x5,4",
+        "40x6,7",
+        "50x8,3",
+        "63x10,5",
+        "75x12,5",
+        "90x15",
+        "110x18,3"
+    ];
+
+    ruryPexWew = [12.0, 16.0, 20, 26, 33, 42, 54];
+    ruryPexNomin = [
+        "16x2,0",
+        "20x2,0",
+        "25x2,5",
+        "32x3,0",
+        "40x3,5",
+        "50x4,0",
+        "63x4,5"
+    ];
+
+    var getUmywalka = () => document.getElementById("umywalka").value;
+    var getZlew = () => document.getElementById("zlew").value;
+    var getPluczka = () => document.getElementById("pluczka").value;
+    var getWanna = () => document.getElementById("wanna").value;
+    var getNatrysk = () => document.getElementById("natrysk").value;
+    var getPralka = () => document.getElementById("pralka").value;
+    var getZmywarka = () => document.getElementById("zmywarka").value;
+    var getPisuar = () => document.getElementById("pisuar").value;
+    var getKryterium = () => document.getElementById("kryterium").value;
+    var getRodzajRur = () => document.getElementById("rodzajRur").value;
+    var getRodzajBud = () => document.getElementById("rodzajBud").value;
+
+
+
+    function liczQ() {
+        console.clear()
+        var umywalka = getUmywalka();
+        var zlew = getZlew();
+        var pluczka = getPluczka();
+        var wanna = getWanna();
+        var natrysk = getNatrysk();
+        var pralka = getPralka();
+        var zmywarka = getZmywarka();
+        var pisuar = getPisuar();
+        var kryterium = getKryterium();
+        var rodzajRur = getRodzajRur();
+        var typoszereg = [];
+        var srednicaNominalna = [];
+        var rodzajBud = getRodzajBud();
+
+        var sumaQn = liczSumaQn(umywalka, zlew, pluczka, wanna, natrysk, pralka, zmywarka, pisuar);
+        var qObl = liczPrzeplywQ(sumaQn, rodzajBud);
+        sumaQn = zaokraglijLiczbe(sumaQn, 2);
+        qObl = zaokraglijLiczbe(qObl, 2);
+        var qOblm3h = zaokraglijLiczbe(((qObl * 3600) / 1000), 2)
+
+        switch (rodzajRur) {
+            case "1":
+                typoszereg = rurySrednicaWew;
+                srednicaNominalna = rurySrednicaNominalna;
+                break;
+            case "2":
+                typoszereg = ruryPPWew;
+                srednicaNominalna = ruryPPNomin;
+                break;
+            case "3":
+                typoszereg = ruryPexWew;
+                srednicaNominalna = ruryPexNomin;
+                break;
+        }
+
+        doborRuryOdKryterium(qObl, kryterium, typoszereg, srednicaNominalna)
+        if (sumaQn == 0) {
+            document.getElementById("sumaQn").innerHTML = "0,00";
+            document.getElementById("qObl").innerHTML = "0,00";
+        } else {
+            document.getElementById("sumaQn").innerHTML = sumaQn;
+            document.getElementById("qObl").innerHTML = qObl;
+            document.getElementById("m3hh").innerHTML = qOblm3h;
+
+        }
+    }
+
+
+
+
+    var zaokraglijLiczbe = function (liczba, miejsca) {
+        return (liczba = Number(
+            Math.round(liczba + "e" + miejsca) + "e-" + miejsca
+        ));
+    };
+
+    function liczSumaQn(umywalka, zlew, pluczka, wanna, natrysk, pralka, zmywarka, pisuar) {
+        return umywalka * 0.07 + zlew * 0.07 + pluczka * 0.13 +
+            wanna * 0.15 + natrysk * 0.15 + pralka * 0.25 + zmywarka * 0.15 + pisuar * 0.3;
+    }
+
+
+    function liczPrzeplywQ(sumaQn, rodzajBud) {
+
+        switch (rodzajBud) {
+            case "1":
+                if (sumaQn <= 20) {
+                    qObl = 0.682 * (Math.pow(sumaQn, 0.45)) - 0.14;
+                } else {
+                    qObl = 1.7 * (Math.pow(sumaQn, 0.21)) - 0.7;
+                }
+                break;
+            case "2":
+                if (sumaQn <= 20) {
+                    qObl = 0.682 * (Math.pow(sumaQn, 0.45)) - 0.14;
+                } else {
+                    qObl = 0.4 * (Math.pow(sumaQn, 0.54)) + 0.48;
+                }
+                break;
+            case "3":
+                if (sumaQn <= 20) {
+                    qObl = 0.698 * (Math.pow(sumaQn, 0.5)) - 0.12;
+                } else {
+                    qObl = 1.08 * (Math.pow(sumaQn, 0.5)) - 1.83;
+                }
+                break;
+            case "4":
+                if (sumaQn <= 20) {
+                    qObl = 0.698 * (Math.pow(sumaQn, 0.5)) - 0.12;
+                } else {
+                    qObl = 4.3 * (Math.pow(sumaQn, 0.27)) - 6.65;
+                }
+                break;
+            case "5":
+                if (sumaQn <= 20) {
+                    qObl = 0.698 * (Math.pow(sumaQn, 0.5)) - 0.12;
+                } else {
+                    qObl = 0.25 * (Math.pow(sumaQn, 0.65)) + 1.25;
+                }
+                break;
+            case "6":
+                if (sumaQn <= 1.5) {
+                    qObl = sumaQn;
+                } else if (sumaQn > 1.5 && sumaQn <= 20) {
+                    qObl = 4.4 * (Math.pow(sumaQn, 0.27)) - 3.41;
+                } else {
+                    qObl = -22.5 * (Math.pow(sumaQn, -0.5)) + 11.5;
+                }
+                break;
+        }
+
+        if (qObl > 0) {
+            return qObl;
+        } else {
+            return 0;
+        }
+
+
+    }
+
+    // Zwraca predkosc w [m/s] jednostki args (m3/h, mm)
+    var liczPredkosc = function (przeplyw, srednica) {
+        poleRury = (Math.PI * (srednica / 1000) * (srednica / 1000)) / 4;
+        return (predkosc = przeplyw / 3600 / poleRury);
+    };
+
+    //Dobór rury (przeplyw l/s, kryterium m/s, typoszereg tablica rur mm)
+    function doborRuryOdKryterium(przeplyw, kryterium, typoszereg, srednicaNominalna) {
+        dobranaSrednica = 0;
+        for (let i = 0; i < typoszereg.length; i++) {
+            predkoscPrzeplywu = liczPredkosc(((przeplyw * 3600) / 1000), typoszereg[i]);
+            if (predkoscPrzeplywu < kryterium) {
+                dobranaSrednica = srednicaNominalna[i];
+                predkoscPrzeplywu = zaokraglijLiczbe(predkoscPrzeplywu, 2);
+                document.getElementById("dobranaSrednica").innerHTML = dobranaSrednica;
+                document.getElementById("predkoscObliczona").innerHTML = (predkoscPrzeplywu + " m/s");
+                break
+            } else {
+                document.getElementById("dobranaSrednica").innerHTML = "Za duże Qobl, dla rodzaju rur";
+                document.getElementById("predkoscObliczona").innerHTML = "";
+            }
+
+        }
+    }
+
+
+
+    function zeruj() {
+        document.getElementById("umywalka").value = 0;
+        document.getElementById("zlew").value = 0;
+        document.getElementById("pluczka").value = 0;
+        document.getElementById("wanna").value = 0;
+        document.getElementById("natrysk").value = 0;
+        document.getElementById("pralka").value = 0;
+        document.getElementById("zmywarka").value = 0;
+        document.getElementById("pisuar").value = 0;
+        document.getElementById("sumaQn").innerHTML = "0,00";
+        document.getElementById("qObl").innerHTML = "0,00";
+        document.getElementById("m3hh").innerHTML = "0,00";
+        document.getElementById("dobranaSrednica").innerHTML = "średnica";
+        document.getElementById("predkoscObliczona").innerHTML = "prędkość"
+    }
+
+
+
+
+
+</script>

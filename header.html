@@ -1,0 +1,40 @@
+<header>
+    <nav>
+        <div class="nav-wrapper brown darken-2">
+            <div class="container">
+                <a href="/" id="logoNapis" class="brand-logo"><img id="logo" src="img/kalk.png" alt="" />KalkulatorPro</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="KalkulatorCO.html">Ogrzewanie</a></li>
+                    <li><a href="KalkulatorGazu.html">Gaz</a></li>
+                    <li><a href="KalkulatorWentylacja.html">Wentylacja</a></li>
+                    <li><a href="Wodociagi.html">Wodociągi</a></li>
+                    <li><a href="Kontakt.html">Kontakt</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-demo">
+        <li><a href="KalkulatorCO.html">Ogrzewanie</a></li>
+        <li><a href="KalkulatorGazu.html">Gaz</a></li>
+        <li><a href="KalkulatorWentylacja.html">Wentylacja</a></li>
+        <li><a href="Wodociagi.html">Wodociągi</a></li>
+        <li><a href="Kontakt.html">Kontakt</a></li>
+
+    </ul>
+</header>
+
+<script>
+    $(document).ready(function () {
+        $(".tooltipped").tooltip();
+    });
+
+    $(document).ready(function () {
+        $("select").formSelect();
+    });
+    $(document).ready(function () {
+        $(".sidenav").sidenav();
+    });
+</script>
